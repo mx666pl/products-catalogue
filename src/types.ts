@@ -4,9 +4,7 @@ export type Category = {
 };
 
 export type ProductsResponse = {
-  limit: number;
   products: Product[];
-  skip: number;
   total: number;
 };
 

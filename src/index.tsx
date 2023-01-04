@@ -1,48 +1,32 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import ProductsList from "./components/ProductsList";
-import { Product } from "./types";
+import { ProductsResponse } from "./types";
 import { StyledEngineProvider } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
+import { getBrands, getCategories, getProducts } from "./api";
 
 const router = createHashRouter([
   {
     path: "/",
     element: <App />,
     loader: async (): Promise<{ brands: string[]; categories: string[] }> => {
-      const categoriesResponse = await fetch(
-        "http://localhost:3010/categories"
-      );
-      const categories = (await categoriesResponse.json()) as string[];
-      const brandsResponse = await fetch("http://localhost:3010/brands");
-      const brands = (await brandsResponse.json()) as string[];
-
       return {
-        brands,
-        categories,
+        brands: await getBrands(),
+        categories: await getCategories(),
       };
     },
     children: [
       {
         index: true,
         element: <ProductsList />,
-        loader: async ({ request }): Promise<Product[]> => {
+        loader: async ({ request }): Promise<ProductsResponse> => {
           const url = new URL(request.url);
-          url.searchParams.append("_limit", "5");
-          url.searchParams.append("_page", "1");
-          const response = await fetch(
-            `http://localhost:3010/products${url.search}`
-          );
-          console.log(response.headers.get("x-total-count"));
-          console.log(response.headers.get("Link"));
-          const products = await response.json();
-
-          return products;
+          return await getProducts(0, 4, url.searchParams.toString());
         },
       },
       {

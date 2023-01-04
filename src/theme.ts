@@ -2,6 +2,9 @@ import { createTheme, ThemeOptions } from "@mui/material";
 
 const themeOptions: ThemeOptions = {
   palette: {
+    background: {
+      default: "#f6fafd",
+    },
     primary: {
       main: "#FF5900",
     },

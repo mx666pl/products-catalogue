@@ -9,8 +9,8 @@ const Filters = ({
   brands: string[];
 }) => {
   return (
-    <Grid container spacing={4} my={4}>
-      <Grid item xs={12} sm={6}>
+    <Grid container spacing={4} mt={2}>
+      <Grid item xs={12} md={6}>
         <FilterSelect
           searchQueryName="brand"
           options={brands}
@@ -19,14 +19,14 @@ const Filters = ({
               {...params}
               label="Brand"
               placeholder="Select brand"
-              variant="outlined"
+              variant="standard"
               size="medium"
             />
           )}
         />
       </Grid>
 
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={12} md={6}>
         <FilterSelect
           searchQueryName="category"
           options={categories}
@@ -39,7 +39,7 @@ const Filters = ({
               {...params}
               label="Category"
               placeholder="Select category"
-              variant="outlined"
+              variant="standard"
               size="medium"
             />
           )}
