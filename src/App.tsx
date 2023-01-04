@@ -1,24 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { CssBaseline, Container, Typography } from "@mui/material";
+import Filters from "./components/Filters";
+import { Outlet, useLoaderData } from "react-router-dom";
 
 function App() {
+  const { brands, categories } = useLoaderData() as {
+    brands: string[];
+    categories: string[];
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <CssBaseline />
+      <Container sx={{ my: 4 }}>
+        <header className="App-header">
+          <Typography component="h1" variant="h1">
+            Product catalogue
+          </Typography>
+          <Filters categories={categories} brands={brands} />
+        </header>
+        <main>
+          <Outlet />
+        </main>
+      </Container>
     </div>
   );
 }
