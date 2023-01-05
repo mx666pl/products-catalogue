@@ -3,7 +3,7 @@ export type Category = {
   name: string;
 };
 
-export type ProductsResponse = {
+export type ProductsData = {
   products: Product[];
   total: number;
 };
