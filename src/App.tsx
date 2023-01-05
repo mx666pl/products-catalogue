@@ -13,7 +13,7 @@ function App() {
       <CssBaseline />
       <Container sx={{ my: 4 }}>
         <header className="App-header">
-          <Typography component="h1" variant="h1">
+          <Typography component="h1" variant="h2">
             Product catalogue
           </Typography>
           <Filters categories={categories} brands={brands} />
