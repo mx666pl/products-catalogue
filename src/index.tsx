@@ -1,19 +1,24 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { createHashRouter, RouterProvider } from "react-router-dom";
-import ProductsList from "./components/ProductsList";
-import { ProductsResponse } from "./types";
+import { ProductsData } from "./types";
 import { StyledEngineProvider } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 import { getBrands, getCategories, getProducts } from "./api";
 
+const App = lazy(() => import("./App"));
+const ProductsList = lazy(() => import("./components/ProductsList"));
+
 const router = createHashRouter([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <Suspense fallback={<>App loading...</>}>
+        <App />
+      </Suspense>
+    ),
     loader: async (): Promise<{ brands: string[]; categories: string[] }> => {
       return {
         brands: await getBrands(),
@@ -23,15 +28,15 @@ const router = createHashRouter([
     children: [
       {
         index: true,
-        element: <ProductsList />,
-        loader: async ({ request }): Promise<ProductsResponse> => {
+        element: (
+          <Suspense fallback={<>Products loading...</>}>
+            <ProductsList />
+          </Suspense>
+        ),
+        loader: async ({ request }): Promise<ProductsData> => {
           const url = new URL(request.url);
-          return await getProducts(0, 4, url.searchParams.toString());
+          return await getProducts(url.searchParams.toString());
         },
-      },
-      {
-        path: ":category",
-        element: <>Produkty kategoria</>,
       },
     ],
   },
