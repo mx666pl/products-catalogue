@@ -23,17 +23,14 @@ const FilterSelect = ({
       options={options}
       value={selectedOption}
       onChange={(e, selectedOption, reason) => {
-        setSearchParams((prev) => {
-          const currentQueries = Array.from(prev.entries());
-
+        setSearchParams((currentSearchParams) => {
           if (selectedOption) {
-            return Object.fromEntries([
-              ...currentQueries,
-              [searchQueryName, selectedOption],
-            ]);
+            currentSearchParams.set(searchQueryName, selectedOption);
           } else {
-            return currentQueries.filter((el) => el[0] !== searchQueryName);
+            currentSearchParams.delete(searchQueryName);
           }
+
+          return currentSearchParams;
         });
         onChange?.(e, selectedOption, reason);
       }}
