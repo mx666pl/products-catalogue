@@ -2,20 +2,25 @@ import React, { lazy, Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import reportWebVitals from "./reportWebVitals";
 import { createHashRouter, RouterProvider } from "react-router-dom";
-import { ProductsData } from "./types";
-import { StyledEngineProvider } from "@mui/material";
+import { ErrorBoundary } from "react-error-boundary";
+import { StyledEngineProvider, CircularProgress, Box } from "@mui/material";
+import { SnackbarProvider } from "notistack";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
+import { ProductsData } from "./types";
 import { getBrands, getCategories, getProducts } from "./api";
+import ErrorFallback from "./components/ErrorFallback";
 
 const App = lazy(() => import("./App"));
 const ProductsList = lazy(() => import("./components/ProductsList"));
+const NoPage = lazy(() => import("./components/NoPage"));
 
 const router = createHashRouter([
   {
     path: "/",
+    id: "root",
     element: (
-      <Suspense fallback={<>App loading...</>}>
+      <Suspense fallback={<></>}>
         <App />
       </Suspense>
     ),
@@ -29,7 +34,20 @@ const router = createHashRouter([
       {
         index: true,
         element: (
-          <Suspense fallback={<>Products loading...</>}>
+          <Suspense
+            fallback={
+              <Box
+                sx={{
+                  textAlign: "center",
+                  py: 10,
+                }}
+              >
+                <CircularProgress size={80} />
+                <br />
+                Loading products
+              </Box>
+            }
+          >
             <ProductsList />
           </Suspense>
         ),
@@ -39,6 +57,7 @@ const router = createHashRouter([
         },
       },
     ],
+    errorElement: <NoPage />,
   },
 ]);
 
@@ -48,9 +67,17 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <StyledEngineProvider injectFirst>
-        <RouterProvider router={router} />
-      </StyledEngineProvider>
+      <SnackbarProvider
+        maxSnack={3}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        autoHideDuration={4000}
+      >
+        <StyledEngineProvider injectFirst>
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <RouterProvider router={router} />
+          </ErrorBoundary>
+        </StyledEngineProvider>
+      </SnackbarProvider>
     </ThemeProvider>
   </React.StrictMode>
 );

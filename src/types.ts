@@ -1,8 +1,3 @@
-export type Category = {
-  id: string;
-  name: string;
-};
-
 export type ProductsData = {
   products: Product[];
   total: number;

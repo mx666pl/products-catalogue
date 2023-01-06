@@ -1,26 +1,15 @@
-import { useState, useEffect, useCallback } from "react";
-import { Button, Box } from "@mui/material";
-import { useLoaderData, useSearchParams } from "react-router-dom";
-import { getProducts } from "../api";
+import { useState, useEffect } from "react";
+import { Box, Button, CircularProgress } from "@mui/material";
+import { useLoaderData } from "react-router-dom";
 import { Product, ProductsData } from "../types";
 import ProductRow from "./ProductRow";
-import { LOAD_SIZE } from "../constant";
+import useMoreProducts from "../hooks/useMoreProducts";
+import NoProducts from "./NoProducts";
 
 const ProductsList = () => {
   const { products: initProducts, total } = useLoaderData() as ProductsData;
   const [products, setProducts] = useState<Product[]>(initProducts || []);
-  const [searchParams] = useSearchParams();
-
-  const handleLoadMore = useCallback(async () => {
-    const displayedProductsCount = products.length;
-    const { products: loadedProducts } = await getProducts(
-      searchParams.toString(),
-      displayedProductsCount,
-      displayedProductsCount + LOAD_SIZE
-    );
-
-    setProducts((prev) => [...prev, ...loadedProducts]);
-  }, [products, setProducts, searchParams]);
+  const { isLoading, loadMore } = useMoreProducts();
 
   useEffect(() => {
     setProducts(initProducts);
@@ -29,18 +18,47 @@ const ProductsList = () => {
   return (
     <>
       {!products.length ? (
-        <Box>No products</Box>
+        <NoProducts />
       ) : (
-        <>
-          {products.map((product) => (
-            <ProductRow key={product.id} product={product} />
-          ))}
+        <Box>
+          <Box
+            sx={{
+              pb: 4,
+            }}
+          >
+            {products.map((product) => (
+              <ProductRow key={product.id} product={product} />
+            ))}
+          </Box>
+
           {products.length < total && (
-            <Button variant="outlined" onClick={handleLoadMore}>
-              Load more
-            </Button>
+            <Box
+              sx={{
+                pb: 8,
+                maxWidth: "500px",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            >
+              <Button
+                variant="outlined"
+                size="large"
+                onClick={async () => {
+                  const moreProducts = await loadMore(products.length);
+                  moreProducts &&
+                    setProducts((prev) => [...prev, ...moreProducts]);
+                }}
+                sx={{
+                  width: "100%",
+                }}
+                disabled={isLoading}
+                startIcon={isLoading ? <CircularProgress size={20} /> : null}
+              >
+                Load more
+              </Button>
+            </Box>
           )}
-        </>
+        </Box>
       )}
     </>
   );
