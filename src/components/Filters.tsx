@@ -1,13 +1,13 @@
 import { Grid, TextField } from "@mui/material";
+import { useRouteLoaderData } from "react-router-dom";
 import FilterSelect from "./FilterSelect";
 
-const Filters = ({
-  categories,
-  brands,
-}: {
-  categories: string[];
-  brands: string[];
-}) => {
+const Filters = () => {
+  const { brands, categories } = useRouteLoaderData("root") as {
+    brands: string[];
+    categories: string[];
+  };
+
   return (
     <Grid container spacing={4} mt={2}>
       <Grid item xs={12} md={6}>
