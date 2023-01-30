@@ -1,4 +1,4 @@
-# Simple product catalogue
+# Simple product catalogue (example interview project)
 
 Simple products catalogue with filters
 
