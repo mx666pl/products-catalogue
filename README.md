@@ -10,15 +10,15 @@ Install dependencies: npm i
 
 In the project directory, you can run:
 
-### `npm start:backend`
+### `npm run start:backend`
 
 Runs the api with brands, categories and products collections. \
 
-### `npm start`
+### `npm run start`
 
 Runs project in development mode
 
-### `npm test`
+### `npm run test`
 
 Launches the test runner in the interactive watch mode.
 
